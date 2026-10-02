@@ -1,11 +1,11 @@
-# 🧺 Plataforma de lavanderia por assinatura
+# 🧺 Plataforma de lavanderia com coleta e entrega
 
 > **Projeto real em desenvolvimento.** Nome, marca e dados do negócio foram omitidos por confidencialidade.
-> Este repositório é uma **vitrine**: mostra o produto e as decisões por trás dele, sem o código-fonte.
+> Este repositório é uma **vitrine**: mostra o que foi construído e como funciona, sem o código-fonte.
 
-Plataforma para uma lavanderia por assinatura com **coleta e entrega em casa**: o cliente agenda, o motorista busca, a unidade pesa, lava e devolve, e cada etapa fica registrada.
+O cliente agenda, o motorista busca, a unidade pesa, lava e devolve, e cada etapa fica registrada.
 
-**Meu papel:** Product Owner e desenvolvimento, com agentes de IA (Claude Code) escrevendo o código sob a minha especificação.
+**Meu papel:** desenvolvimento, com agentes de IA (Claude Code) escrevendo o código sob a minha orientação. Defino a arquitetura, valido o que é gerado e publico.
 
 ---
 
@@ -30,54 +30,26 @@ Plataforma para uma lavanderia por assinatura com **coleta e entrega em casa**: 
 
 ---
 
-## 🎯 Decisões de produto
+## 🧩 Três aplicações, um banco de dados
 
-O código foi a parte rápida. O trabalho de verdade foi decidir **o que construir, para quem e em que ordem**.
+As três áreas leem e gravam no mesmo banco, em tempo real. O que o motorista toca na rua aparece na hora no painel da loja e no app do cliente.
 
-### 1. Roadmap em 5 fases
+| Aplicação | Quem usa | O que faz |
+|---|---|---|
+| **App do cliente** | Cliente | Agenda a coleta por dia e período e acompanha o pedido, da saída do motorista até o peso na balança |
+| **Painel do operador** | Equipe da loja | Fila de trabalho do dia, confirmação dos pedidos, recebimento, pesagem e gestão de clientes, imóveis, rotas e equipe |
+| **App do motorista** | Motorista | Duas listas, o que buscar e o que entregar, com um toque em cada parada |
 
-```
-Fase 1   backoffice + operação
-Fase 2   app do cliente
-Fase 3   automações e integrações
-Fase 4   B2B avançado
-Fase 5   expansão multiunidade
-```
+Cada pessoa só enxerga o que precisa: são **8 papéis de acesso**, e uma mesma pessoa pode acumular mais de um.
 
-### 2. MVP scope: o app do cliente ficou **fora** da v1
-
-Na Fase 1 o cliente pede por WhatsApp e o operador lança o pedido no painel.
-O app entra depois, **como conveniência, não como pré-requisito para operar**.
-
-Primeiro validar a operação com os primeiros clientes. Depois construir a conveniência.
-
-### 3. Priorização do backlog
-
-| Prioridade | Critério |
-|---|---|
-| **P0** | Sem isso a lavanderia não opera |
-| **P1** | Entra logo depois, ainda na Fase 1 |
-| **P2** | Quando a operação estabilizar |
-
-A tela principal do operador não é um dashboard de indicadores: é uma **fila de trabalho** (coletas de hoje, entregas de hoje, em processamento, aguardando pesagem).
-
-### 4. User personas: 8 papéis
-
-Administrador, gestor da unidade, operador, controle de qualidade, motorista, financeiro, cliente residencial e cliente B2B.
-Uma mesma pessoa pode acumular papéis, e cada papel só enxerga o que precisa.
-
-### 5. Fluxo do pedido, ponta a ponta
+### Fluxo do pedido
 
 ```
 solicitar → confirmar → rota → coletar → receber → pesar → triagem
 → lavar → secar → controle de qualidade → dobrar → expedir → entregar → concluir
 ```
 
-São 14 etapas, e cada transição grava **quem fez, quando e em qual unidade**.
-
-### 6. Discovery com o stakeholder
-
-Antes de escrever a especificação, levantei **21 perguntas de negócio** com o sócio da operação (preço, franquia de quilos, prazos, papéis, cobrança de excedente). As respostas viraram o documento de decisões que guia o produto.
+Cada transição grava **quem fez, quando e em qual unidade**.
 
 ---
 
@@ -95,7 +67,7 @@ Antes de escrever a especificação, levantei **21 perguntas de negócio** com o
 
 ## 🔒 Qualidade e segurança
 
-Regras definidas antes da primeira tela:
+Regras do projeto:
 
 - **Isolamento entre unidades** feito dentro do banco (Row Level Security), nunca pelo aplicativo
 - **Toda tabela com política de acesso.** O CI falha se aparecer uma tabela sem proteção
@@ -113,20 +85,12 @@ Regras definidas antes da primeira tela:
 | | |
 |---|---|
 | Telas | 33 |
-| Áreas | 3 (cliente, operador, motorista) |
+| Aplicações | 3 (cliente, operador, motorista) |
 | Migrations do banco | 30 |
 | Papéis de acesso | 8 |
 | Etapas do fluxo do pedido | 14 |
 
 ---
-
-## 📄 Documentos que guiam o projeto
-
-- Especificação funcional
-- Modelo de dados
-- Decisões de negócio (respostas do stakeholder)
-- Regras de segurança e LGPD
-- Plano de operação
 
 ---
 
